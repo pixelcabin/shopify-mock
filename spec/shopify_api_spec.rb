@@ -7,8 +7,8 @@ shared_examples "a collection" do
   }
   
   describe "#all" do
-    it "should be an Array of #{described_class}" do
-      collection.should be_a Array
+    it "should be an Enumerable of #{described_class}" do
+      collection.should be_a Enumerable
       collection.first.should be_a described_class
     end
   end
@@ -85,7 +85,7 @@ describe "ShopifyAPI objects" do
     
       clz = "ShopifyAPI::" << o.to_s.singularize.classify
       clz = clz.constantize
-    
+
       first_item = JSON.parse(ShopifyAPI::Mock::Fixture.find(o, :json).data)[o.to_s].first
       found = clz.find(first_item['id'].to_i)
       found.should be_a clz
