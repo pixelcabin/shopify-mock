@@ -74,6 +74,10 @@ describe "ShopifyAPI objects" do
 
   end
 
+  # CustomerGroup is an alias for CustomerSavedSearches in ShopifyAPI, so we need to use CustomerSavedSearch for request mocks
+  FIXTURE_FOR_OBJECT = {
+    customer_groups: :customer_saved_searches
+  }
   # still to test
   # :articles, :events, :fulfillments,:variants, :transactions :provinces, :images, :metafields,
   # test find on classes which have ids
@@ -86,7 +90,8 @@ describe "ShopifyAPI objects" do
       clz = "ShopifyAPI::" << o.to_s.singularize.classify
       clz = clz.constantize
 
-      first_item = JSON.parse(ShopifyAPI::Mock::Fixture.find(o, :json).data)[o.to_s].first
+      f = FIXTURE_FOR_OBJECT[o] || o
+      first_item = JSON.parse(ShopifyAPI::Mock::Fixture.find(f, :json).data)[f.to_s].first
       found = clz.find(first_item['id'].to_i)
       found.should be_a clz
       found.id.should == first_item['id']
