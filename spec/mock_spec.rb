@@ -12,8 +12,8 @@ describe ShopifyAPI::Mock do
   describe "#enabled=" do
     context "given true" do
       before { ShopifyAPI::Mock.enabled = true }
-      it "should register a response for each fixtures * 2 for the count fixtures" do        
-        ShopifyAPI::Mock::Response.all.count.should eq ShopifyAPI::Mock::Fixture.all.count * 2
+      it "should register a response for each fixtures * 2 for the count fixtures + individual objects inside fixtures" do
+        ShopifyAPI::Mock::Response.all.count.should eq ShopifyAPI::Mock::Fixture.all.count * 2 + 80
       end
     end
     
