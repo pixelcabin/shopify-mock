@@ -8,7 +8,7 @@ describe :response do
     before { @fixture = ShopifyAPI::Mock::Fixture.find :orders }
     it "should cache the new response" do
       count = ShopifyAPI::Mock::Response.all.count
-      ShopifyAPI::Mock::Response.new(:get, "/orders.json", @fixture)
+      ShopifyAPI::Mock::Response.new(:get, "/orders.json", @fixture.to_s)
       ShopifyAPI::Mock::Response.all.count.should eq count + 1
     end
   end
@@ -16,7 +16,7 @@ describe :response do
   describe "class methods" do
     describe "#all" do
       subject { ShopifyAPI::Mock::Response.all }
-      it { should be_kind_of Array }
+      it { should be_kind_of Hash }
     end
     
     describe "#clear" do

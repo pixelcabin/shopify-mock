@@ -11,16 +11,20 @@ module ShopifyAPI
       #   ShopifyAPI::Mock::Response.new :get, "orders/count.xml", "hello world"
       # @api public
       def initialize(method, resource, response)
-        @@responses += FakeWeb.register_uri(
-          method, /#{SHOPIFY_MOCK_SHOP_BASE_URL}#{resource}/,
-          :body => response
-        )
+        req = ActiveResource::Request.new(method, '/admin/'+resource, nil, ShopifyAPI::Base.headers)
+        res = ActiveResource::Response.new(response)
+        @@responses[req] = res
+        ActiveResource::HttpMock.respond_to({req => res}, false)
+        # @@responses += FakeWeb.register_uri(
+        #   method, /#{SHOPIFY_MOCK_SHOP_BASE_URL}#{resource}/,
+        #   :body => response
+        # )
       end
-      
+
       class << self
         # store for all registered responses
-        @@responses = []
-        
+        @@responses = {}
+
         # finds all the registered responses
         # @return [Array, FakeWeb] all the FakeWeb registered responses
         # @example List all the registered responses
@@ -29,15 +33,15 @@ module ShopifyAPI
         def all
           @@responses
         end
-        
+
         # clears all the currently registered responses
         # @return [Array] the registered responses after clearing (should be empty)
         # @example Clearing all registered responses
         #   ShopifyAPI::Mock::Response.clear
         # @api public
         def clear
-          FakeWeb.clean_registry
-          @@responses = []
+          ActiveResource::HttpMock.reset!
+          @@responses = {}
         end
       end
     end
